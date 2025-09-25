@@ -33,9 +33,7 @@ set list
 set listchars=tab:>-,extends:<,trail:-,eol:\ 
 
 "" --- Copy/Paste/Cut ---
-if has('unnamedplus')
-  set clipboard=unnamed,unnamedplus
-endif
+set clipboard=unnamed,unnamedplus
 
 "" --- Map leader to ',' ---
 let mapleader=','
