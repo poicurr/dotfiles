@@ -5,7 +5,6 @@
 set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8
-set ttyfast
 
 "" --- Searching ---
 set incsearch
@@ -13,46 +12,40 @@ set hlsearch
 set smartcase
 set wrapscan
 
-set iminsert=0
-set imsearch=-1
-set cindent
-set cino+=g0
-
 "" --- Tabs ---
 set shiftwidth=2
 set tabstop=2
 set softtabstop=2
 set expandtab
 
+"" --- IME ---
+set iminsert=0
+set imsearch=-1
+
+"" --- Indent ---
+set cindent
+set cino+=g0
+
+"" --- Backspace/Cursor Movement ---
 set backspace=indent,eol,start
 set whichwrap=b,s,h,l,<,>,[,]
-set nu rnu
+
+"" --- Prevents unnecessary file generation ---
 set nobackup
 set noswapfile
-set list
-set listchars=tab:>-,extends:<,trail:-,eol:\ 
 
 "" --- Copy/Paste/Cut ---
 set clipboard=unnamed,unnamedplus
 
-"" --- Map leader to ',' ---
-let mapleader=','
-
 filetype plugin indent on
-set completeopt-=preview
 syntax enable
-
-"" ------------------------------------------------------------
-"" Cursor
-"" ------------------------------------------------------------
-let &t_SI = "\e[5 q"
-let &t_EI = "\e[2 q"
-let &t_SR = "\e[3 q"
 
 "" ------------------------------------------------------------
 "" Key Mappings
 "" ------------------------------------------------------------
+let mapleader=','
 
+"" --- Clear search results ---
 nnoremap <ESC><ESC> :nohlsearch<CR>
 
 "" --- Split ---
@@ -127,20 +120,9 @@ let g:ale_fixers = {
 \ 'javascript': ['prettier'],
 \}
 
-"" ---------------------------------------------
-"" Visual Settings
-"" ---------------------------------------------
-set background=dark
-colorscheme desert
-set relativenumber
-set cursorline
-highlight CursorLine cterm=NONE ctermfg=white ctermbg=darkgray
-
-"" ---------------------------------------------
-"" airline
-"" ---------------------------------------------
+"" --- airline ---
 let g:airline_powerline_fonts = 1
-
+let g:airline_skip_empty_sections = 1
 let g:airline_theme = 'papercolor'
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -150,21 +132,40 @@ let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
 let g:airline_symbols.branch = ''
+let g:airline_symbols.branch = '⎇'
 let g:airline_symbols.readonly = ''
 let g:airline_symbols.linenr = '☰'
 let g:airline_symbols.maxlinenr = '㏑'
 let g:airline_symbols.dirty='⚡'
 let g:airline_symbols.crypt = '🔒'
-let g:airline_symbols.branch = '⎇'
 let g:airline_symbols.paste = 'ρ'
 let g:airline_symbols.paste = 'Þ'
-let g:airline_symbols.paste = '∥'
 let g:airline_symbols.spell = 'Ꞩ'
 let g:airline_symbols.notexists = '∄'
 let g:airline_symbols.whitespace = 'Ξ'
 
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
-let g:airline_skip_empty_sections = 1
+
+"" ---------------------------------------------
+"" Visual Settings
+"" ---------------------------------------------
+"" --- Color ---
+set background=dark
+colorscheme desert
+
+"" --- Display ---
+set nu rnu
+set list
+set listchars=tab:>-,extends:<,trail:-,eol:\ 
+set ttyfast
+
+"" --- Cursor ---
+let &t_SI = "\e[5 q"
+let &t_EI = "\e[2 q"
+let &t_SR = "\e[3 q"
+
+set cursorline
+highlight CursorLine cterm=NONE ctermfg=white ctermbg=darkgray
 
 filetype on
