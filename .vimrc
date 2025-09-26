@@ -152,7 +152,6 @@ let g:airline#extensions#ale#enabled = 1
 "" ---------------------------------------------
 "" --- Color ---
 set background=dark
-colorscheme default
 if has('termguicolors')
   set termguicolors
 endif
