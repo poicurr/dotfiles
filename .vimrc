@@ -153,23 +153,26 @@ let g:airline#extensions#ale#enabled = 1
 "" --- Color ---
 set background=dark
 colorscheme default
-set termguicolors
+if has('termguicolors')
+  set termguicolors
+endif
 
-highlight LineNr       guifg=#858585 guibg=#1E1E1E
-highlight Normal       guifg=#D4D4D4 guibg=#1E1E1E
-highlight Comment      guifg=#6A9955
-highlight String       guifg=#CE9178
-highlight Number       guifg=#B5CEA8
-highlight Keyword      guifg=#569CD6
-highlight Identifier   guifg=#9CDCFE
-highlight Function     guifg=#DCDCAA
-highlight Type         guifg=#4EC9B0
-highlight Constant     guifg=#569CD6
-highlight Special      guifg=#C586C0
-highlight Operator     guifg=#D4D4D4
-highlight Error        guifg=#F44747 guibg=#1E1E1E
-highlight Search       guifg=NONE    guibg=#264F78
-highlight Visual       guifg=NONE    guibg=#264F78
+highlight Normal       guifg=#D4D4D4 guibg=#1E1E1E ctermfg=252 ctermbg=235
+highlight Comment      guifg=#6A9955                     ctermfg=65
+highlight String       guifg=#CE9178                     ctermfg=173
+highlight Number       guifg=#B5CEA8                     ctermfg=151
+highlight Keyword      guifg=#569CD6                     ctermfg=75
+highlight Identifier   guifg=#9CDCFE                     ctermfg=117
+highlight Function     guifg=#DCDCAA                     ctermfg=187
+highlight Type         guifg=#4EC9B0                     ctermfg=79
+highlight Constant     guifg=#569CD6                     ctermfg=75
+highlight Special      guifg=#C586C0                     ctermfg=176
+highlight Operator     guifg=#D4D4D4                     ctermfg=252
+highlight Error        guifg=#F44747 guibg=#1E1E1E       ctermfg=203 ctermbg=235
+highlight Search       guibg=#264F78 guifg=NONE          ctermbg=24  ctermfg=NONE
+highlight LineNr       guifg=#858585 guibg=#1E1E1E       ctermfg=240 ctermbg=235
+highlight CursorLineNr guifg=#FFFFFF guibg=#1E1E1E gui=bold ctermfg=15 ctermbg=235 cterm=bold
+highlight CursorLine   guibg=#2A2A2A gui=NONE            ctermbg=236 cterm=NONE
 
 "" --- Display ---
 set nu rnu
@@ -182,8 +185,6 @@ let &t_SI = "\e[5 q"
 let &t_EI = "\e[2 q"
 let &t_SR = "\e[3 q"
 set cursorline
-highlight CursorLine   cterm=NONE guifg=NONE    guibg=#2A2A2A gui=NONE
-highlight CursorLineNr cterm=NONE guifg=#FFFFFF guibg=#2A2A2A gui=bold
 
 filetype on
 
