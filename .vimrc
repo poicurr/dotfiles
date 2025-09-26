@@ -152,7 +152,24 @@ let g:airline#extensions#ale#enabled = 1
 "" ---------------------------------------------
 "" --- Color ---
 set background=dark
-colorscheme desert
+colorscheme default
+set termguicolors
+
+highlight LineNr       guifg=#858585 guibg=#1E1E1E
+highlight Normal       guifg=#D4D4D4 guibg=#1E1E1E
+highlight Comment      guifg=#6A9955
+highlight String       guifg=#CE9178
+highlight Number       guifg=#B5CEA8
+highlight Keyword      guifg=#569CD6
+highlight Identifier   guifg=#9CDCFE
+highlight Function     guifg=#DCDCAA
+highlight Type         guifg=#4EC9B0
+highlight Constant     guifg=#569CD6
+highlight Special      guifg=#C586C0
+highlight Operator     guifg=#D4D4D4
+highlight Error        guifg=#F44747 guibg=#1E1E1E
+highlight Search       guifg=NONE    guibg=#264F78
+highlight Visual       guifg=NONE    guibg=#264F78
 
 "" --- Display ---
 set nu rnu
@@ -164,8 +181,9 @@ set ttyfast
 let &t_SI = "\e[5 q"
 let &t_EI = "\e[2 q"
 let &t_SR = "\e[3 q"
-
 set cursorline
-highlight CursorLine cterm=NONE ctermfg=white ctermbg=darkgray
+highlight CursorLine   cterm=NONE guifg=NONE    guibg=#2A2A2A gui=NONE
+highlight CursorLineNr cterm=NONE guifg=#FFFFFF guibg=#2A2A2A gui=bold
 
 filetype on
+
