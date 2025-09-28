@@ -5,6 +5,7 @@
 set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8
+set ff=unix
 
 "" --- Searching ---
 set incsearch
@@ -119,6 +120,10 @@ let g:ale_fixers = {
 \ 'cpp': ['clang-format'],
 \ 'javascript': ['prettier'],
 \}
+
+let g:ale_cpp_clangformat_options =
+      \ '--style="{BasedOnStyle: LLVM, AlwaysBreakTemplateDeclarations: Yes, IndentCaseLabels: true}"'
+let g:ale_c_clangformat_options = g:ale_cpp_clangformat_options
 
 "" --- airline ---
 let g:airline_powerline_fonts = 1
