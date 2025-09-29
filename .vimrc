@@ -46,6 +46,9 @@ syntax enable
 "" ------------------------------------------------------------
 let mapleader=','
 
+"" --- Available Commands ---
+nnoremap <leader><leader> :Commands<CR>
+
 "" --- Clear search results ---
 nnoremap <ESC><ESC> :nohlsearch<CR>
 
@@ -97,9 +100,9 @@ call dein#begin(s:dein_base)
   call dein#add('dense-analysis/ale')
   call dein#add('vim-airline/vim-airline-themes')
   call dein#add('vim-airline/vim-airline')
-  if executable('ag')
-    call dein#add('rking/ag.vim')
-  endif
+  call dein#add('tpope/vim-fugitive')
+  call dein#add('junegunn/fzf', { 'build': './install --all', 'merged': 0 })
+  call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
 call dein#end()
 
 "" --- nerdtree ---
@@ -151,6 +154,20 @@ let g:airline_symbols.whitespace = 'Ξ'
 
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
+
+"" --- FZF ---
+fun! FzfOmniFiles()
+  let is_git = system('git status')
+  if v:shell_error
+    :Files
+  else
+    :GitFiles
+  endif
+endfun
+
+nnoremap <C-b> :Buffers<CR>
+nnoremap <C-g> :NERDTreeClose<CR>:Rg<Space>
+nnoremap <C-p> :NERDTreeClose<CR>:call FzfOmniFiles()<CR>
 
 "" ---------------------------------------------
 "" Visual Settings
