@@ -169,6 +169,15 @@ nnoremap <C-b> :Buffers<CR>
 nnoremap <C-g> :NERDTreeClose<CR>:Rg<Space>
 nnoremap <C-p> :NERDTreeClose<CR>:call FzfOmniFiles()<CR>
 
+command! -bang -nargs=* Rg
+\ call fzf#vim#grep(
+\ 'rg --vimgrep --hidden --color=always '.shellescape(<q-args>),
+\ 1,
+\ fzf#vim#with_preview({'options':
+\   '--ansi --delimiter : --nth 4.. --preview-window=right:50%:nowrap:border'
+\ }, 'right:50%', '?'),
+\ <bang>0)
+
 "" ---------------------------------------------
 "" Visual Settings
 "" ---------------------------------------------
