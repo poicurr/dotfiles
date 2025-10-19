@@ -2,9 +2,8 @@
 "" Basic Setup
 "" ------------------------------------------------------------
 "" --- Encoding ---
-set encoding=utf-8
+set encoding=utf-8 nobomb
 set fileencoding=utf-8
-set fileencodings=utf-8
 set ff=unix
 
 "" --- Searching ---
@@ -199,10 +198,6 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> K <plug>(lsp-hover)
     nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
     nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
-
-    let g:lsp_format_sync_timeout = 1000
-    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
-    " refer to doc to add more commands
 endfunction
 
 augroup lsp_install
@@ -236,6 +231,9 @@ let g:NERDTreeDirArrowCollapsible='▾'
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeWinSize=25
 let g:NERDTreeShowBookmarks=1
+
+"" --- fugitive ---
+set diffopt+=vertical
 
 "" --- airline ---
 let g:airline_powerline_fonts = 1
@@ -297,27 +295,27 @@ if has('termguicolors')
 endif
 
 highlight Normal       guifg=#D4D4D4 guibg=#1E1E1E ctermfg=252 ctermbg=235
-highlight Comment      guifg=#6A9955                     ctermfg=65
-highlight String       guifg=#CE9178                     ctermfg=173
-highlight Number       guifg=#B5CEA8                     ctermfg=151
-highlight Keyword      guifg=#569CD6                     ctermfg=75
-highlight Identifier   guifg=#9CDCFE                     ctermfg=117
-highlight Function     guifg=#DCDCAA                     ctermfg=187
-highlight Type         guifg=#4EC9B0                     ctermfg=79
-highlight Constant     guifg=#569CD6                     ctermfg=75
-highlight Special      guifg=#C586C0                     ctermfg=176
-highlight Operator     guifg=#D4D4D4                     ctermfg=252
-highlight Error        guifg=#F44747 guibg=#1E1E1E       ctermfg=203 ctermbg=235
-highlight Search       guibg=#264F78 guifg=NONE          ctermbg=24  ctermfg=NONE
-highlight LineNr       guifg=#858585 guibg=#1E1E1E       ctermfg=240 ctermbg=235
+highlight Comment      guifg=#6A9955               ctermfg=65
+highlight String       guifg=#CE9178               ctermfg=173
+highlight Number       guifg=#B5CEA8               ctermfg=151
+highlight Keyword      guifg=#569CD6               ctermfg=75
+highlight Identifier   guifg=#9CDCFE               ctermfg=117
+highlight Function     guifg=#DCDCAA               ctermfg=187
+highlight Type         guifg=#4EC9B0               ctermfg=79
+highlight Constant     guifg=#569CD6               ctermfg=75
+highlight Special      guifg=#C586C0               ctermfg=176
+highlight Operator     guifg=#D4D4D4               ctermfg=252
+highlight Error        guifg=#F44747 guibg=#1E1E1E ctermfg=203 ctermbg=235
+highlight Search       guibg=#264F78 guifg=NONE    ctermbg=24  ctermfg=NONE
+highlight LineNr       guifg=#858585 guibg=#1E1E1E ctermfg=240 ctermbg=235
 highlight CursorLineNr guifg=#FFFFFF guibg=#1E1E1E gui=bold ctermfg=15 ctermbg=235 cterm=bold
-highlight CursorLine   guibg=#2A2A2A gui=NONE            ctermbg=236 cterm=NONE
-highlight SignColumn   guibg=#2e2e2e
+highlight CursorLine   guibg=#2A2A2A gui=NONE      ctermbg=236 cterm=NONE
+highlight SignColumn   guibg=#2E2E2E               ctermbg=236
 
 "" --- Display ---
 set nu rnu
 set list
-set listchars=tab:>-,extends:<,trail:-,eol:\ 
+set listchars=tab:>-,extends:<,eol:\ ,trail:-
 set ttyfast
 
 "" --- Cursor ---
