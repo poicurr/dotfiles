@@ -96,14 +96,137 @@ execute 'set runtimepath+=' .. s:dein_src
 
 call dein#begin(s:dein_base)
   call dein#add(s:dein_src)
-  call dein#add('scrooloose/nerdtree')
+
+  call dein#add('Shougo/vimproc.vim', {'build': 'make'})
+
   call dein#add('dense-analysis/ale')
+  call dein#add('prabirshrestha/vim-lsp')
+  call dein#add('prabirshrestha/asyncomplete.vim')
+  call dein#add('prabirshrestha/asyncomplete-lsp.vim')
+  call dein#add('rhysd/vim-lsp-ale')
+
+  call dein#add('Shougo/neosnippet.vim')
+  call dein#add('Shougo/neosnippet-snippets')
+  call dein#add('airblade/vim-gitgutter')
+
+  call dein#add('scrooloose/nerdtree')
+  call dein#add('tpope/vim-fugitive')
+  call dein#add('junegunn/fzf', {'build': './install --all', 'merged': 0})
+  call dein#add('junegunn/fzf.vim', {'depends': 'fzf'})
+
+  call dein#add('sheerun/vim-polyglot')
   call dein#add('vim-airline/vim-airline-themes')
   call dein#add('vim-airline/vim-airline')
-  call dein#add('tpope/vim-fugitive')
-  call dein#add('junegunn/fzf', { 'build': './install --all', 'merged': 0 })
-  call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
 call dein#end()
+
+"" --- vimproc ---
+let g:vimproc#download_windows_dll = 1
+
+"" --- ale ---
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_completion_enabled = 0
+let g:ale_set_balloons = 0
+let g:ale_fix_on_save = 1
+let g:ale_vim_vint_show_style_issues = 0
+let g:ale_sh_shfmt_options = '-i 4'
+
+let g:ale_fixers = {
+  \  'c': ['clang-format'],
+  \  'cpp': ['clang-format'],
+  \  'javascript': ['prettier'],
+  \  'typescript': ['prettier'],
+  \  'typescriptreact': ['prettier'],
+  \  'css': ['stylelint'],
+  \  'python': ['black', 'yapf'],
+  \  'rust': ['rustfmt'],
+  \  'json': ['fixjson'],
+  \  'sh': ['shfmt'],
+  \  'lua': ['stylua'],
+  \ }
+
+let g:ale_linters = {
+  \  'c': ['clang-tidy', 'vim-lsp'],
+  \  'cpp': ['clang-tidy', 'vim-lsp'],
+  \  'python': ['pylint', 'mypy', 'vim-lsp'],
+  \  'javascript': ['eslint'],
+  \  'typescript': ['eslint', 'vim-lsp'],
+  \  'go': ['staticcheck', 'vim-lsp'],
+  \  'rust': ['vim-lsp'],
+  \  'lua': ['vim-lsp'],
+  \ }
+
+let g:ale_cpp_clangformat_options =
+\  '--style="{BasedOnStyle: LLVM, AlwaysBreakTemplateDeclarations: Yes, IndentCaseLabels: true}"'
+let g:ale_c_clangformat_options = g:ale_cpp_clangformat_options
+
+highlight ALEErrorSign   guifg=#ff0000 guibg=#1e1e1e
+highlight ALEWarningSign guifg=#ffff00 guibg=#1e1e1e
+highlight ALEInfoSign    guifg=#00afff guibg=#1e1e1e
+highlight ALEHintSign    guifg=#aaaaaa guibg=#1e1e1e
+
+"" --- lsp ---
+if executable('clangd')
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'clangd',
+    \ 'cmd': {server_info->['clangd', '-background-index']},
+    \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+    \ })
+endif
+
+if executable('typescript-language-server')
+  " npm install -g tyepscript-language-server
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'tyepscript-language-server',
+    \ 'cmd': { server_info -> ['typescript-language-server', '--stdio'] },
+    \ 'whitelist': ['typescript', 'typescriptreact'],
+    \ })
+endif
+
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+    let g:lsp_format_sync_timeout = 1000
+    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+    " refer to doc to add more commands
+endfunction
+
+augroup lsp_install
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+autocmd User lsp_float_opened call popup_setoptions(
+  \ lsp#ui#vim#output#getpreviewwinid(),
+  \ {
+  \   'borderchars': ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
+  \   'highlight': 'NormalFloat',
+  \ })
+
+"" --- gitgutter ---
+highlight GitGutterAdd          guifg=#00ff00 ctermfg=2 gui=bold cterm=bold
+highlight GitGutterChange       guifg=#ffff00 ctermfg=3 gui=bold cterm=bold
+highlight GitGutterDelete       guifg=#ff0000 ctermfg=1 gui=bold cterm=bold
+highlight GitGutterChangeDelete guifg=#ff00ff ctermfg=5 gui=bold cterm=bold
+
+let g:gitgutter_sign_added = '+'
+let g:gitgutter_sign_modified = '~'
+let g:gitgutter_sign_removed = '-'
 
 "" --- nerdtree ---
 map <C-t> :NERDTreeToggle<CR>
@@ -113,20 +236,6 @@ let g:NERDTreeDirArrowCollapsible='▾'
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeWinSize=25
 let g:NERDTreeShowBookmarks=1
-
-"" --- ale ---
-let g:ale_linters_explicit = 1
-let g:ale_fix_on_save = 1
-
-let g:ale_fixers = {
-\ 'c': ['clang-format'],
-\ 'cpp': ['clang-format'],
-\ 'javascript': ['prettier'],
-\}
-
-let g:ale_cpp_clangformat_options =
-      \ '--style="{BasedOnStyle: LLVM, AlwaysBreakTemplateDeclarations: Yes, IndentCaseLabels: true}"'
-let g:ale_c_clangformat_options = g:ale_cpp_clangformat_options
 
 "" --- airline ---
 let g:airline_powerline_fonts = 1
@@ -203,6 +312,7 @@ highlight Search       guibg=#264F78 guifg=NONE          ctermbg=24  ctermfg=NON
 highlight LineNr       guifg=#858585 guibg=#1E1E1E       ctermfg=240 ctermbg=235
 highlight CursorLineNr guifg=#FFFFFF guibg=#1E1E1E gui=bold ctermfg=15 ctermbg=235 cterm=bold
 highlight CursorLine   guibg=#2A2A2A gui=NONE            ctermbg=236 cterm=NONE
+highlight SignColumn   guibg=#2e2e2e
 
 "" --- Display ---
 set nu rnu
