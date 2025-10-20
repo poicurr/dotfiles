@@ -22,9 +22,27 @@ If:
   PathMatch: .*
   PathExclude: include/llvm-c/.*
 CompileFlags:
-  Add: [-std=c++20 -Wall -Wextra]
+  Add: [-xc++, -std=c++20, -Wall, -Wextra]
   Compiler: clang++
 Diagnostics:
   Suppress: [missing-field-initializers]
+```
+
+Linux clangでは標準ライブラリの明示が必要
+```yaml
+If:
+  PathMatch: .*
+
+CompileFlags:
+  Add: [
+    -xc++,
+    -std=c++20,
+    -stdlib=libc++,
+    -lc++abi,
+    -Wall,
+    -Wextra,
+    -I/usr/include/c++/v1
+  ]
+  Compiler: clang++
 ```
 
