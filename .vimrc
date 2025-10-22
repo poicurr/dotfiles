@@ -328,5 +328,11 @@ let &t_EI = "\e[2 q"
 let &t_SR = "\e[3 q"
 set cursorline
 
+"" --- FileType ---
+augroup cppm_detect
+  autocmd!
+  autocmd BufNewFile,BufRead *.cppm setfiletype cpp
+augroup END
+
 filetype on
 
