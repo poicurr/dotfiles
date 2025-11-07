@@ -74,6 +74,12 @@ nnoremap <Tab> gt
 nnoremap <S-Tab> gT
 nnoremap <silent> <S-t> :tabnew<CR>
 
+"" --- Terminal ---
+function! OpenTerminal()
+  botright terminal ++rows=8
+endfunction
+nnoremap <silent> <F5> :call OpenTerminal()<CR>
+
 ""-------------------------------------------------------------
 "" Plugins(dein.vim)
 ""-------------------------------------------------------------
