@@ -123,6 +123,7 @@ call dein#begin(s:dein_base)
   call dein#add('junegunn/fzf', {'build': './install --all', 'merged': 0})
   call dein#add('junegunn/fzf.vim', {'depends': 'fzf'})
 
+  call dein#add('ryanoasis/vim-devicons')
   call dein#add('sheerun/vim-polyglot')
   call dein#add('vim-airline/vim-airline-themes')
   call dein#add('vim-airline/vim-airline')
@@ -219,7 +220,7 @@ augroup END
 autocmd User lsp_float_opened call popup_setoptions(
   \ lsp#ui#vim#output#getpreviewwinid(),
   \ {
-  \   'borderchars': ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
+  \   'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
   \   'highlight': 'NormalFloat',
   \ })
 
@@ -236,14 +237,24 @@ let g:gitgutter_sign_removed = '-'
 "" --- nerdtree ---
 map <C-t> :NERDTreeToggle<CR>
 let NERDTreeShowHidden=1
-let g:NERDTreeDirArrowExpandable='▸'
-let g:NERDTreeDirArrowCollapsible='▾'
+""let g:NERDTreeDirArrowExpandable = '▸'
+""let g:NERDTreeDirArrowCollapsible = '▾'
+let g:NERDTreeDirArrowExpandable = ''
+let g:NERDTreeDirArrowCollapsible = ''
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeWinSize=25
 let g:NERDTreeShowBookmarks=1
 
 "" --- fugitive ---
 set diffopt+=vertical
+
+"" --- devicons ---
+let g:webdevicons_enable = 1
+let g:webdevicons_enable_nerdtree = 1
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:DevIconsEnableFoldersOpenClose = 1
+let g:webdevicons_enable_airline_statusline = 1
+let g:webdevicons_enable_airline_tabline = 1
 
 "" --- airline ---
 let g:airline_powerline_fonts = 1
@@ -257,11 +268,12 @@ let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
 let g:airline_symbols.branch = ''
-let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.branch = ''
 let g:airline_symbols.readonly = ''
 let g:airline_symbols.linenr = '☰'
 let g:airline_symbols.maxlinenr = '㏑'
-let g:airline_symbols.dirty='⚡'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.dirty = '⚡'
 let g:airline_symbols.crypt = '🔒'
 let g:airline_symbols.paste = 'ρ'
 let g:airline_symbols.paste = 'Þ'
@@ -321,6 +333,10 @@ highlight LineNr       guifg=#858585 guibg=#1E1E1E ctermfg=240 ctermbg=235
 highlight CursorLineNr guifg=#FFFFFF guibg=#1E1E1E gui=bold ctermfg=15 ctermbg=235 cterm=bold
 highlight CursorLine   guibg=#2A2A2A gui=NONE      ctermbg=236 cterm=NONE
 highlight SignColumn   guibg=#2E2E2E               ctermbg=236
+highlight Pmenu      ctermfg=250 ctermbg=237 guifg=#d0d0d0 guibg=#3a3a3a
+highlight PmenuSel   ctermfg=16  ctermbg=110 guifg=#000000 guibg=#87afd7
+highlight PmenuSbar  ctermbg=238 guibg=#444444
+highlight PmenuThumb ctermbg=250 guibg=#aaaaaa
 
 "" --- Display ---
 set nu rnu
