@@ -123,6 +123,7 @@ call dein#begin(s:dein_base)
   call dein#add('junegunn/fzf', {'build': './install --all', 'merged': 0})
   call dein#add('junegunn/fzf.vim', {'depends': 'fzf'})
 
+  call dein#add('tomasiser/vim-code-dark')
   call dein#add('ryanoasis/vim-devicons')
   call dein#add('sheerun/vim-polyglot')
   call dein#add('vim-airline/vim-airline-themes')
@@ -312,31 +313,7 @@ command! -bang -nargs=* Rg
 "" ---------------------------------------------
 "" --- Color ---
 set background=dark
-if has('termguicolors')
-  set termguicolors
-endif
-
-highlight Normal       guifg=#D4D4D4 guibg=#1E1E1E ctermfg=252 ctermbg=235
-highlight Comment      guifg=#6A9955               ctermfg=65
-highlight String       guifg=#CE9178               ctermfg=173
-highlight Number       guifg=#B5CEA8               ctermfg=151
-highlight Keyword      guifg=#569CD6               ctermfg=75
-highlight Identifier   guifg=#9CDCFE               ctermfg=117
-highlight Function     guifg=#DCDCAA               ctermfg=187
-highlight Type         guifg=#4EC9B0               ctermfg=79
-highlight Constant     guifg=#569CD6               ctermfg=75
-highlight Special      guifg=#C586C0               ctermfg=176
-highlight Operator     guifg=#D4D4D4               ctermfg=252
-highlight Error        guifg=#F44747 guibg=#1E1E1E ctermfg=203 ctermbg=235
-highlight Search       guibg=#264F78 guifg=NONE    ctermbg=24  ctermfg=NONE
-highlight LineNr       guifg=#858585 guibg=#1E1E1E ctermfg=240 ctermbg=235
-highlight CursorLineNr guifg=#FFFFFF guibg=#1E1E1E gui=bold ctermfg=15 ctermbg=235 cterm=bold
-highlight CursorLine   guibg=#2A2A2A gui=NONE      ctermbg=236 cterm=NONE
-highlight SignColumn   guibg=#2E2E2E               ctermbg=236
-highlight Pmenu      ctermfg=250 ctermbg=237 guifg=#d0d0d0 guibg=#3a3a3a
-highlight PmenuSel   ctermfg=16  ctermbg=110 guifg=#000000 guibg=#87afd7
-highlight PmenuSbar  ctermbg=238 guibg=#444444
-highlight PmenuThumb ctermbg=250 guibg=#aaaaaa
+colorscheme codedark
 
 "" --- Display ---
 set nu rnu
