@@ -313,6 +313,9 @@ command! -bang -nargs=* Rg
 "" ---------------------------------------------
 "" --- Color ---
 set background=dark
+if has('termguicolors')
+  set termguicolors
+endif
 colorscheme codedark
 
 "" --- Display ---
