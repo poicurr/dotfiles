@@ -1,3 +1,10 @@
+"" --- detect nvim ---
+if has('nvim')
+  let g:is_nvim = 1
+else
+  let g:is_nvim = 0
+endif
+
 "" ------------------------------------------------------------
 "" Basic Setup
 "" ------------------------------------------------------------
@@ -74,14 +81,29 @@ nnoremap <Tab> gt
 nnoremap <S-Tab> gT
 nnoremap <silent> <S-t> :tabnew<CR>
 
-"" --- Terminal ---
-function! OpenTerminal()
-  botright terminal ++rows=8
+
+" --- Terminal ---
+if g:is_nvim
+  augroup TerminalInsert
+    autocmd!
+    autocmd TermOpen * startinsert
+  augroup END
+endif
+
+function! OpenTerminal() abort
+  if g:is_nvim
+    botright split
+    resize 8
+    terminal
+  else
+    botright terminal ++rows=8
+  endif
 endfunction
+
 nnoremap <silent> <F5> :call OpenTerminal()<CR>
 
 ""-------------------------------------------------------------
-"" Plugins(dein.vim)
+"" Plugins (dein.vim)
 ""-------------------------------------------------------------
 let $CACHE = expand('~/.cache')
 if !($CACHE->isdirectory())
@@ -122,6 +144,8 @@ call dein#begin(s:dein_base)
   call dein#add('tpope/vim-fugitive')
   call dein#add('junegunn/fzf', {'build': './install --all', 'merged': 0})
   call dein#add('junegunn/fzf.vim', {'depends': 'fzf'})
+
+  call dein#add('gauteh/vim-cppman')
 
   call dein#add('tomasiser/vim-code-dark')
   call dein#add('ryanoasis/vim-devicons')
@@ -186,44 +210,64 @@ if executable('clangd')
 endif
 
 if executable('typescript-language-server')
-  " npm install -g tyepscript-language-server
+  " npm install -g typescript-language-server
   autocmd User lsp_setup call lsp#register_server({
-    \ 'name': 'tyepscript-language-server',
+    \ 'name': 'typescript-language-server',
     \ 'cmd': { server_info -> ['typescript-language-server', '--stdio'] },
     \ 'allowlist': ['typescript', 'typescriptreact'],
     \ })
 endif
 
+if g:is_nvim
+  augroup LspFloatNvim
+    autocmd!
+    autocmd User lsp_float_opened call s:ApplyRoundedBorderNvim()
+  augroup END
+
+  function! s:ApplyRoundedBorderNvim() abort
+    let l:event = get(v:, 'event', {})
+    let l:winid = get(l:event, 'winid', -1)
+    if l:winid > 0
+      call nvim_win_set_config(l:winid, {
+            \ 'border': ['╭','─','╮','│','╯','─','╰','│'],
+            \ })
+    endif
+  endfunction
+else
+  augroup LspFloatVim
+    autocmd!
+    autocmd User lsp_float_opened call popup_setoptions(
+          \ lsp#ui#vim#output#getpreviewwinid(),
+          \ {
+          \   'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+          \   'highlight': 'NormalFloat',
+          \ })
+  augroup END
+endif
+
 function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gs <plug>(lsp-document-symbol-search)
-    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-    nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
-    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+  setlocal omnifunc=lsp#complete
+  setlocal signcolumn=yes
+  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+  nmap <buffer> gd <plug>(lsp-definition)
+  nmap <buffer> gs <plug>(lsp-document-symbol-search)
+  nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+  nmap <buffer> gr <plug>(lsp-references)
+  nmap <buffer> gi <plug>(lsp-implementation)
+  nmap <buffer> gt <plug>(lsp-type-definition)
+  nmap <buffer> <leader>rn <plug>(lsp-rename)
+  nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+  nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+  nmap <buffer> K <plug>(lsp-hover)
+  nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+  nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 endfunction
 
 augroup lsp_install
-    au!
-    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+  au!
+  " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
-
-autocmd User lsp_float_opened call popup_setoptions(
-  \ lsp#ui#vim#output#getpreviewwinid(),
-  \ {
-  \   'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-  \   'highlight': 'NormalFloat',
-  \ })
 
 "" --- gitgutter ---
 highlight GitGutterAdd          guifg=#00ff00 ctermfg=2 gui=bold cterm=bold
@@ -287,17 +331,12 @@ let g:airline#extensions#ale#enabled = 1
 
 "" --- FZF ---
 fun! FzfOmniFiles()
-  let is_git = system('git status')
-  if v:shell_error
-    :Files
-  else
-    :GitFiles
-  endif
+  :Files
 endfun
 
 nnoremap <C-b> :Buffers<CR>
-nnoremap <C-g> :NERDTreeClose<CR>:Rg<Space>
-nnoremap <C-p> :NERDTreeClose<CR>:call FzfOmniFiles()<CR>
+nnoremap <C-g> :Rg<Space>
+nnoremap <C-p> :call FzfOmniFiles()<CR>
 
 command! -bang -nargs=* Rg
 \ call fzf#vim#grep(
@@ -324,16 +363,58 @@ set list
 set listchars=tab:>-,extends:<,eol:\ ,trail:-
 set ttyfast
 
+"" --- popup / float ---
+hi Pmenu        guibg=#1e1e1e guifg=#d4d4d4
+hi PmenuSel     guibg=#264f78 guifg=#ffffff
+hi PmenuSbar    guibg=#2a2d2e
+hi PmenuThumb   guibg=#45494e
+
+if exists('&pumblend')
+  set pumblend=10
+endif
+
+if g:is_nvim
+  hi NormalFloat guibg=#1e1e1e guifg=#d4d4d4
+  hi FloatBorder guibg=#1e1e1e guifg=#3c3c3c
+
+  if exists('&winblend')
+    set winblend=10
+  endif
+
+  function! Popup(msg) abort
+    let l:buf = nvim_create_buf(v:false, v:true)
+    let l:lines = split(a:msg, "\n")
+    call nvim_buf_set_lines(l:buf, 0, -1, v:false, l:lines)
+    let l:width  = max(map(copy(l:lines), 'strwidth(v:val)'))
+    let l:height = len(l:lines)
+    call nvim_open_win(l:buf, v:true, {
+          \ 'relative': 'cursor',
+          \ 'row': 1,
+          \ 'col': 1,
+          \ 'width': l:width,
+          \ 'height': l:height,
+          \ 'style': 'minimal',
+          \ 'border': 'rounded',
+          \ 'noautocmd': v:true,
+          \ })
+  endfunction
+endif
+
 "" --- Cursor ---
 let &t_SI = "\e[5 q"
 let &t_EI = "\e[2 q"
 let &t_SR = "\e[3 q"
 set cursorline
 
-"" --- FileType ---
+"" --- FileType / C++ ---
 augroup cppm_detect
   autocmd!
   autocmd BufNewFile,BufRead *.cppm setfiletype cpp
+augroup END
+
+augroup cpp_settings
+  autocmd!
+  set keywordprg=cppman
 augroup END
 
 filetype on
